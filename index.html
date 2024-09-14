@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Series</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Librería jsQR para escaneo de códigos QR -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 </head>
 <body>
     <div class="container">
@@ -19,16 +21,29 @@
             <h2>Ingresar código de producto</h2>
             <input type="text" id="productCode" placeholder="Código de producto">
             <button id="acceptProduct">Aceptar</button>
+            <div id="productError" class="alert">Por favor, ingrese un código de producto válido.</div>
         </div>
 
         <!-- Sección para registrar series -->
         <div id="seriesSection" class="section">
             <div id="counter">Registrando: Producto | Series: 0</div>
-            <h2>Escanear serie</h2>
+            <h2>Escanear o ingresar serie</h2>
             <input type="text" id="seriesCode" placeholder="Código de serie">
+            <input type="number" id="seriesQuantity" placeholder="Cantidad (Opcional)">
             <button id="registerSeries">Registrar Serie</button>
+            <button id="scanWithCamera">Escanear con Cámara</button>
             <button id="newProduct">Registrar Nuevo Producto</button>
             <button id="finish">Finalizar</button>
+            <div id="seriesError" class="alert">Por favor, ingrese un código de serie válido.</div>
+        </div>
+
+        <!-- Sección para escanear código con la cámara -->
+        <div id="cameraSection" class="section">
+            <h2>Escanear código con cámara</h2>
+            <video id="video" width="300" height="200" autoplay></video>
+            <button id="captureButton">Capturar Código</button>
+            <canvas id="canvas" style="display:none;"></canvas>
+            <button id="backToSeries">Volver a Registro</button>
         </div>
 
         <!-- Sección para finalizar y descargar reporte -->
@@ -36,6 +51,7 @@
             <h2>Finalizar Pedido</h2>
             <input type="text" id="orderNumber" placeholder="Número de pedido">
             <button id="generateReport">Generar Reporte</button>
+            <div id="reportError" class="alert">Por favor, ingrese un número de pedido válido.</div>
         </div>
     </div>
 
