@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const finish = document.getElementById('finish');
     const generateReport = document.getElementById('generateReport');
     const backToSeries = document.getElementById('backToSeries');
-    const captureButton = document.getElementById('captureButton');
+    const captureButton = document.getElementById('captureButton');  // Botón para capturar código
 
     const productError = document.getElementById('productError');
     const seriesError = document.getElementById('seriesError');
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Escanear con cámara
     scanWithCamera.addEventListener('click', function() {
         mostrarSeccion('cameraSection');
-        escanearCodigoQR();  // Iniciar escaneo automático
+        iniciarCamara();  // Iniciar la cámara
     });
 
     // Volver a registro de series
@@ -146,37 +146,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Función para escanear QR con la cámara y detectar automáticamente códigos
-    function escanearCodigoQR() {
+    // Función para iniciar la cámara
+    function iniciarCamara() {
         const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const context = canvas.getContext('2d');
-
-        // Acceder a la cámara
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(function(stream) {
             video.srcObject = stream;
             video.setAttribute('playsinline', true); // Requerido para iOS safari
             video.play();
-            requestAnimationFrame(scanQRFrame);  // Iniciar detección automática
         });
-
-        function scanQRFrame() {
-            if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
-
-                if (qrCode) {
-                    // Detectar automáticamente el QR o código de barras y agregarlo al campo
-                    document.getElementById('seriesCode').value = qrCode.data;
-                    mostrarSeccion('seriesSection'); // Volver a la sección de registro de series
-                    video.srcObject.getTracks().forEach(track => track.stop()); // Detener la cámara
-                } else {
-                    requestAnimationFrame(scanQRFrame);  // Seguir detectando hasta encontrar un código
-                }
-            }
-        }
     }
+
+    // Capturar código al hacer clic en "Capturar Código"
+    captureButton.addEventListener('click', function() {
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+        // Dibujar la imagen del video en el canvas
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Obtener los datos de la imagen y analizar para código QR o código de barras
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
+
+        if (qrCode) {
+            // Si se detecta un código, se introduce en el campo de serie
+            document.getElementById('seriesCode').value = qrCode.data;
+            mostrarSeccion('seriesSection'); // Volver a la sección de registro de series
+            video.srcObject.getTracks().forEach(track => track.stop()); // Detener la cámara
+        } else {
+            // Si no se detecta ningún código
+            alert('No se detectó ningún código. Inténtalo de nuevo.');
+        }
+    });
 });
