@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Escanear con cámara
     scanWithCamera.addEventListener('click', function() {
         mostrarSeccion('cameraSection');
-        escanearCodigoQR();
+        escanearCodigoQR();  // Iniciar escaneo automático
     });
 
     // Volver a registro de series
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Función para escanear QR con la cámara
+    // Función para escanear QR con la cámara y detectar automáticamente códigos
     function escanearCodigoQR() {
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             video.srcObject = stream;
             video.setAttribute('playsinline', true); // Requerido para iOS safari
             video.play();
-            requestAnimationFrame(scanQRFrame);
+            requestAnimationFrame(scanQRFrame);  // Iniciar detección automática
         });
 
         function scanQRFrame() {
@@ -169,12 +169,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
 
                 if (qrCode) {
-                    alert(`Código QR detectado: ${qrCode.data}`);
+                    // Detectar automáticamente el QR o código de barras y agregarlo al campo
                     document.getElementById('seriesCode').value = qrCode.data;
-                    mostrarSeccion('seriesSection');
+                    mostrarSeccion('seriesSection'); // Volver a la sección de registro de series
+                    video.srcObject.getTracks().forEach(track => track.stop()); // Detener la cámara
+                } else {
+                    requestAnimationFrame(scanQRFrame);  // Seguir detectando hasta encontrar un código
                 }
             }
-            requestAnimationFrame(scanQRFrame);
         }
     }
 });
