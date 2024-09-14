@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Escanear con cámara
     scanWithCamera.addEventListener('click', function() {
         mostrarSeccion('cameraSection');
-        iniciarCamara();  // Iniciar la cámara
+        iniciarCamara();  // Iniciar la cámara con mayor resolución
     });
 
     // Volver a registro de series
@@ -146,17 +146,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Función para iniciar la cámara
+    // Función para iniciar la cámara con resolución mejorada
     function iniciarCamara() {
         const video = document.getElementById('video');
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(function(stream) {
+        navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: 'environment',
+                width: { ideal: 1280 },  // Intentar obtener una mayor resolución
+                height: { ideal: 720 }
+            }
+        }).then(function(stream) {
             video.srcObject = stream;
             video.setAttribute('playsinline', true); // Requerido para iOS safari
             video.play();
+        }).catch(function(err) {
+            console.error("Error al acceder a la cámara: ", err);
+            alert("No se pudo acceder a la cámara.");
         });
     }
 
-    // Capturar código al hacer clic en "Capturar Código"
+    // Capturar código al hacer clic en "Capturar Código" con filtros mejorados
     captureButton.addEventListener('click', function() {
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -167,18 +176,61 @@ document.addEventListener('DOMContentLoaded', function() {
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Obtener los datos de la imagen y analizar para código QR o código de barras
+        // Aplicar un filtro de blanco y negro para mejorar la detección
         const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        // Convertir a blanco y negro (filtro simple de umbral)
+        for (let i = 0; i < data.length; i += 4) {
+            let avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            data[i] = avg; // R
+            data[i + 1] = avg; // G
+            data[i + 2] = avg; // B
+        }
+
+        context.putImageData(imageData, 0, 0);
+
+        // Realizar la detección del código QR en la imagen procesada
         const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
 
         if (qrCode) {
-            // Si se detecta un código, se introduce en el campo de serie
             document.getElementById('seriesCode').value = qrCode.data;
             mostrarSeccion('seriesSection'); // Volver a la sección de registro de series
             video.srcObject.getTracks().forEach(track => track.stop()); // Detener la cámara
         } else {
-            // Si no se detecta ningún código
             alert('No se detectó ningún código. Inténtalo de nuevo.');
         }
     });
+
+    // Opción para escanear códigos de barras usando QuaggaJS
+    function iniciarEscanerQuagga() {
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector('#video'), // Elemento donde se mostrará el video
+                constraints: {
+                    facingMode: "environment" // Usar la cámara trasera
+                }
+            },
+            decoder: {
+                readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "upc_reader", "qr_reader"] // Tipos de códigos
+            }
+        }, function (err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            Quagga.start();
+        });
+
+        // Manejar la detección del código
+        Quagga.onDetected(function (result) {
+            if (result && result.codeResult && result.codeResult.code) {
+                document.getElementById('seriesCode').value = result.codeResult.code;
+                Quagga.stop(); // Detener el escaneo una vez detectado el código
+                mostrarSeccion('seriesSection'); // Volver a la sección de registro de series
+            }
+        });
+    }
 });
