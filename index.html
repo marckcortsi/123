@@ -2,10 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Series</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"> <!-- Asegúrate de enlazar tu archivo CSS -->
     <!-- Librería jsQR para escaneo de códigos QR -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 </head>
@@ -16,12 +15,17 @@
         <!-- Sección de inicio -->
         <button id="startButton" class="section visible">Comenzar</button>
 
+        <!-- Botón para ver reportes anteriores -->
+        <button id="viewReportsButton" class="section visible">Ver Reportes Anteriores</button>
+        <ul id="reportList" class="section visible"></ul> <!-- Lista de reportes anteriores -->
+
         <!-- Sección para ingresar el código del producto -->
         <div id="productSection" class="section">
             <h2>Ingresar código de producto</h2>
             <input type="text" id="productCode" placeholder="Código de producto">
             <button id="acceptProduct">Aceptar</button>
             <div id="productError" class="alert">Por favor, ingrese un código de producto válido.</div>
+            <button id="backToSeriesFromProduct" class="red-button">Regresar</button> <!-- Botón para regresar -->
         </div>
 
         <!-- Sección para registrar series -->
@@ -37,25 +41,17 @@
             <div id="seriesError" class="alert">Por favor, ingrese un código de serie válido.</div>
         </div>
 
-        <!-- Sección para escanear código con la cámara -->
-        <div id="cameraSection" class="section">
-            <h2>Escanear código con cámara</h2>
-            <video id="video" width="300" height="200" autoplay></video>
-            <button id="captureButton">Capturar Código</button>
-            <canvas id="canvas" style="display:none;"></canvas>
-            <button id="backToSeries">Volver a Registro</button>
-        </div>
-
         <!-- Sección para finalizar y descargar reporte -->
         <div id="finishSection" class="section">
             <h2>Finalizar Pedido</h2>
             <input type="text" id="orderNumber" placeholder="Número de pedido">
             <button id="generateReport">Generar Reporte</button>
             <div id="reportError" class="alert">Por favor, ingrese un número de pedido válido.</div>
+            <button id="backToSeriesFromFinish" class="red-button">Regresar</button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js"></script> <!-- Asegúrate de enlazar correctamente tu archivo JS -->
 </body>
 </html>
