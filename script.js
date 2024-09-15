@@ -1,236 +1,194 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Variables
-    const startButton = document.getElementById('startButton');
-    const acceptProduct = document.getElementById('acceptProduct');
-    const registerSeries = document.getElementById('registerSeries');
-    const scanWithCamera = document.getElementById('scanWithCamera');
-    const newProduct = document.getElementById('newProduct');
-    const finish = document.getElementById('finish');
-    const generateReport = document.getElementById('generateReport');
-    const backToSeries = document.getElementById('backToSeries');
-    const captureButton = document.getElementById('captureButton');  // Botón para capturar código
+// Variables globales
+let scannedSerials = JSON.parse(localStorage.getItem('scannedSerials')) || [];
+let productSerials = JSON.parse(localStorage.getItem('productSerials')) || {};
+let currentProduct = null;
 
-    const productError = document.getElementById('productError');
-    const seriesError = document.getElementById('seriesError');
-    const reportError = document.getElementById('reportError');
+// Función para emitir un sonido al registrar un serial
+function playBeep() {
+    const beep = new Audio('https://www.soundjay.com/button/beep-07.wav');
+    beep.play();
+}
 
-    let seriesCount = 0;
-    let seriesList = [];
-    let productCode = '';
-    let productList = [];
+// Función para mostrar mensajes de error
+function showError(elementId, message) {
+    const errorDiv = document.getElementById(elementId);
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+}
 
-    // Mostrar secciones
-    function mostrarSeccion(idSeccion) {
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.remove('visible');
-        });
-        document.getElementById(idSeccion).classList.add('visible');
+// Función para ocultar el mensaje de error
+function hideError(elementId) {
+    document.getElementById(elementId).style.display = 'none';
+}
+
+// Función para actualizar el contador de series
+function updateCounter() {
+    if (currentProduct && productSerials[currentProduct]) {
+        let seriesCount = productSerials[currentProduct].length;
+        document.getElementById('counter').textContent = `Registrando: ${currentProduct} | Series: ${seriesCount}`;
+    } else {
+        document.getElementById('counter').textContent = 'Registrando: Producto | Series: 0';
+    }
+    localStorage.setItem('productSerials', JSON.stringify(productSerials));  // Guardar en localStorage
+}
+
+// Función para iniciar el registro al hacer clic en el botón "Comenzar"
+document.getElementById('startButton').addEventListener('click', function () {
+    document.getElementById('startButton').style.display = 'none';
+    document.getElementById('viewReportsButton').style.display = 'none';  // Ocultar el botón de ver reportes
+    document.getElementById('reportList').style.display = 'none';  // Ocultar la lista de reportes
+    document.getElementById('productSection').classList.add('visible');
+    currentProduct = null;
+    updateCounter();
+});
+
+// Función para aceptar el código de producto y mostrar la sección de series
+document.getElementById('acceptProduct').addEventListener('click', function () {
+    const productCode = document.getElementById('productCode').value.trim();
+
+    if (!productCode) {
+        showError('productError', 'Por favor, ingrese un código de producto válido.');
+        return;
     }
 
-    // Iniciar
-    startButton.addEventListener('click', function() {
-        mostrarSeccion('productSection');
-    });
+    hideError('productError');
+    document.getElementById('productSection').classList.remove('visible');
+    document.getElementById('seriesSection').classList.add('visible');
 
-    // Aceptar producto
-    acceptProduct.addEventListener('click', function() {
-        productCode = document.getElementById('productCode').value;
-        if (!productCode) {
-            productError.style.display = 'block';
-        } else {
-            productError.style.display = 'none';
-            seriesList = []; // Limpiar lista de series cuando se empieza un nuevo producto
-            seriesCount = 0;
-            document.getElementById('counter').innerText = `Registrando: ${productCode} | Series: 0`;
-            mostrarSeccion('seriesSection');
-        }
-    });
+    currentProduct = productCode;
 
-    // Registrar serie y cantidad consecutiva
-    registerSeries.addEventListener('click', function() {
-        const seriesCode = document.getElementById('seriesCode').value;
-        let seriesQuantity = parseInt(document.getElementById('seriesQuantity').value, 10) || 1;
-
-        if (!seriesCode) {
-            seriesError.style.display = 'block';
-        } else {
-            seriesError.style.display = 'none';
-            // Registrar el serial y sus consecutivos
-            for (let i = 0; i < seriesQuantity; i++) {
-                let currentSerial = `${parseInt(seriesCode, 10) + i}`;
-                seriesList.push({ code: currentSerial });
-                seriesCount++;
-            }
-
-            // Actualizar el contador y limpiar los campos de entrada
-            document.getElementById('counter').innerText = `Registrando: ${productCode} | Series: ${seriesCount}`;
-            document.getElementById('seriesCode').value = '';
-            document.getElementById('seriesQuantity').value = '';
-        }
-    });
-
-    // Escanear con cámara
-    scanWithCamera.addEventListener('click', function() {
-        mostrarSeccion('cameraSection');
-        iniciarCamara();  // Iniciar la cámara con mayor resolución
-    });
-
-    // Volver a registro de series
-    backToSeries.addEventListener('click', function() {
-        mostrarSeccion('seriesSection');
-    });
-
-    // Registrar nuevo producto
-    newProduct.addEventListener('click', function() {
-        if (seriesList.length > 0) {
-            productList.push({
-                product: productCode,
-                series: seriesList.slice() // Clonamos la lista de series para este producto
-            });
-        }
-        productCode = '';
-        seriesList = [];
-        seriesCount = 0;
-        document.getElementById('productCode').value = ''; // Limpiar el campo de producto
-        mostrarSeccion('productSection');
-    });
-
-    // Finalizar registro y mostrar sección de reporte
-    finish.addEventListener('click', function() {
-        if (seriesList.length > 0) {
-            productList.push({
-                product: productCode,
-                series: seriesList.slice()
-            });
-        }
-        mostrarSeccion('finishSection');
-    });
-
-    // Generar reporte XLSX
-    generateReport.addEventListener('click', function() {
-        const orderNumber = document.getElementById('orderNumber').value;
-        if (!orderNumber) {
-            reportError.style.display = 'block';
-        } else {
-            reportError.style.display = 'none';
-
-            // Preparar datos para Excel
-            let data = [];
-            let maxSeriesLength = 0;
-
-            // Primera fila con los nombres de los productos
-            let productRow = productList.map(productEntry => productEntry.product);
-            data.push(productRow);
-
-            // Calcular el número máximo de series de un producto
-            productList.forEach(productEntry => {
-                if (productEntry.series.length > maxSeriesLength) {
-                    maxSeriesLength = productEntry.series.length;
-                }
-            });
-
-            // Añadir las series, una serie por celda en cada fila
-            for (let i = 0; i < maxSeriesLength; i++) {
-                let row = productList.map(productEntry => productEntry.series[i] ? productEntry.series[i].code : '');
-                data.push(row);
-            }
-
-            // Generar hoja Excel
-            const worksheet = XLSX.utils.aoa_to_sheet(data);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte de Series');
-            XLSX.writeFile(workbook, `${orderNumber}.xlsx`);
-
-            // Limpiar datos después de generar reporte
-            productList = [];
-        }
-    });
-
-    // Función para iniciar la cámara con resolución mejorada
-    function iniciarCamara() {
-        const video = document.getElementById('video');
-        navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: 'environment',
-                width: { ideal: 1280 },  // Intentar obtener una mayor resolución
-                height: { ideal: 720 }
-            }
-        }).then(function(stream) {
-            video.srcObject = stream;
-            video.setAttribute('playsinline', true); // Requerido para iOS safari
-            video.play();
-        }).catch(function(err) {
-            console.error("Error al acceder a la cámara: ", err);
-            alert("No se pudo acceder a la cámara.");
-        });
+    // Si este producto no ha sido registrado antes, crear un nuevo espacio para él
+    if (!productSerials[productCode]) {
+        productSerials[productCode] = [];
     }
 
-    // Capturar código al hacer clic en "Capturar Código" con filtros mejorados
-    captureButton.addEventListener('click', function() {
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const context = canvas.getContext('2d');
+    updateCounter();
+});
 
-        // Dibujar la imagen del video en el canvas
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        // Aplicar un filtro de blanco y negro para mejorar la detección
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-
-        // Convertir a blanco y negro (filtro simple de umbral)
-        for (let i = 0; i < data.length; i += 4) {
-            let avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            data[i] = avg; // R
-            data[i + 1] = avg; // G
-            data[i + 2] = avg; // B
-        }
-
-        context.putImageData(imageData, 0, 0);
-
-        // Realizar la detección del código QR en la imagen procesada
-        const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
-
-        if (qrCode) {
-            document.getElementById('seriesCode').value = qrCode.data;
-            mostrarSeccion('seriesSection'); // Volver a la sección de registro de series
-            video.srcObject.getTracks().forEach(track => track.stop()); // Detener la cámara
-        } else {
-            alert('No se detectó ningún código. Inténtalo de nuevo.');
-        }
-    });
-
-    // Opción para escanear códigos de barras usando QuaggaJS
-    function iniciarEscanerQuagga() {
-        Quagga.init({
-            inputStream: {
-                name: "Live",
-                type: "LiveStream",
-                target: document.querySelector('#video'), // Elemento donde se mostrará el video
-                constraints: {
-                    facingMode: "environment" // Usar la cámara trasera
-                }
-            },
-            decoder: {
-                readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "upc_reader", "qr_reader"] // Tipos de códigos
-            }
-        }, function (err) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            Quagga.start();
-        });
-
-        // Manejar la detección del código
-        Quagga.onDetected(function (result) {
-            if (result && result.codeResult && result.codeResult.code) {
-                document.getElementById('seriesCode').value = result.codeResult.code;
-                Quagga.stop(); // Detener el escaneo una vez detectado el código
-                mostrarSeccion('seriesSection'); // Volver a la sección de registro de series
-            }
-        });
+// Función para cancelar y regresar a la sección de registro de seriales o productos
+document.getElementById('backToSeriesFromProduct').addEventListener('click', function () {
+    if (currentProduct) {
+        document.getElementById('productSection').classList.remove('visible');
+        document.getElementById('seriesSection').classList.add('visible');
+    } else {
+        document.getElementById('productSection').classList.remove('visible');
+        document.getElementById('startButton').style.display = 'block';
+        document.getElementById('viewReportsButton').style.display = 'block';
     }
+});
+
+// Función para registrar serie junto con la cantidad consecutiva
+document.getElementById('registerSeries').addEventListener('click', function () {
+    let seriesCode = document.getElementById('seriesCode').value.trim();
+    let seriesQuantity = parseInt(document.getElementById('seriesQuantity').value.trim()) || 1;  // Si no se ingresa cantidad, asumir 1
+
+    if (!seriesCode) {
+        showError('seriesError', 'Por favor, ingrese un código de serie válido.');
+        return;
+    }
+
+    seriesCode = parseInt(seriesCode);  // Asegurarse de que el código sea un número
+
+    for (let i = 0; i < seriesQuantity; i++) {
+        let currentSerial = (seriesCode + i).toString();
+
+        if (productSerials[currentProduct].includes(currentSerial)) {
+            showError('seriesError', `El código de serie ${currentSerial} ya ha sido registrado para este producto.`);
+            return;
+        }
+
+        // Registrar el serial para el producto actual
+        productSerials[currentProduct].push(currentSerial);
+        scannedSerials.push({ code: currentSerial, product: currentProduct });
+    }
+
+    hideError('seriesError');
+    playBeep();
+    updateCounter();
+
+    // Limpiar los campos de entrada de serie y cantidad
+    document.getElementById('seriesCode').value = '';
+    document.getElementById('seriesQuantity').value = '';
+});
+
+// Botón para registrar un nuevo producto sin regresar al inicio
+document.getElementById('newProduct').addEventListener('click', function () {
+    document.getElementById('seriesSection').classList.remove('visible');
+    document.getElementById('productSection').classList.add('visible');
+    document.getElementById('productCode').value = '';  // Limpiar el campo de producto
+    updateCounter();
+});
+
+// Función para finalizar y generar el reporte
+document.getElementById('finish').addEventListener('click', function () {
+    document.getElementById('seriesSection').classList.remove('visible');
+    document.getElementById('finishSection').classList.add('visible');
+});
+
+// Función para generar el reporte
+document.getElementById('generateReport').addEventListener('click', function () {
+    const orderNumber = document.getElementById('orderNumber').value.trim();
+
+    if (!orderNumber) {
+        showError('reportError', 'Por favor, ingrese un número de pedido válido.');
+        return;
+    }
+
+    let workbook = XLSX.utils.book_new();
+    let worksheetData = [];
+
+    // Encabezados de productos
+    worksheetData.push(Object.keys(productSerials));
+
+    // Seriales debajo de cada producto
+    const maxRows = Math.max(...Object.values(productSerials).map(arr => arr.length));
+    for (let i = 0; i < maxRows; i++) {
+        const row = Object.keys(productSerials).map(product => productSerials[product][i] || "");
+        worksheetData.push(row);
+    }
+
+    let worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Series');
+    XLSX.writeFile(workbook, `${orderNumber}.xlsx`);
+
+    // Guardar en localStorage los reportes generados
+    let previousReports = JSON.parse(localStorage.getItem('reports')) || [];
+    previousReports.push({ orderNumber, data: worksheetData });
+    localStorage.setItem('reports', JSON.stringify(previousReports));
+
+    // Reiniciar la interfaz
+    productSerials = {};
+    scannedSerials = [];
+    localStorage.removeItem('productSerials');
+    localStorage.removeItem('scannedSerials');
+    document.getElementById('finishSection').classList.remove('visible');
+    document.getElementById('startButton').style.display = 'block';
+    document.getElementById('viewReportsButton').style.display = 'block';
+    document.getElementById('reportList').style.display = 'block';
+});
+
+// Botón para regresar desde la sección de finalizar
+document.getElementById('backToSeriesFromFinish').addEventListener('click', function () {
+    document.getElementById('finishSection').classList.remove('visible');
+    document.getElementById('seriesSection').classList.add('visible');
+});
+
+// Función para mostrar reportes anteriores (solo desde el inicio)
+document.getElementById('viewReportsButton').addEventListener('click', function () {
+    const reportList = document.getElementById('reportList');
+    reportList.innerHTML = '';  // Limpiar la lista
+
+    let reports = JSON.parse(localStorage.getItem('reports')) || [];
+    reports.forEach(report => {
+        let reportItem = document.createElement('li');
+        reportItem.textContent = `Reporte ${report.orderNumber}`;
+        reportItem.addEventListener('click', function () {
+            // Descargar el reporte al hacer clic
+            let workbook = XLSX.utils.book_new();
+            let worksheet = XLSX.utils.aoa_to_sheet(report.data);
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Series');
+            XLSX.writeFile(workbook, `${report.orderNumber}.xlsx`);
+        });
+        reportList.appendChild(reportItem);
+    });
 });
