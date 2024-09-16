@@ -1,9 +1,9 @@
 /* Importar nueva fuente */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 /* Global Styles */
 body {
-    font-family: 'Poppins', sans-serif; /* Nueva fuente */
+    font-family: 'Montserrat', sans-serif; /* Fuente diferente */
     background-color: #1b1b2f;
     color: #f5f5f5;
     margin: 0;
@@ -13,85 +13,221 @@ body {
     align-items: center;
     min-height: 100vh;
     text-align: center;
+    text-transform: uppercase; /* Texto en mayúsculas */
+    overflow: hidden; /* Para evitar scroll no deseado */
 }
 
-/* Centrado y ajuste responsivo del contenedor */
+/* Fondo animado */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle, rgba(98,0,234,0.3), rgba(0,0,0,0.9));
+    animation: gradientMove 10s infinite alternate;
+    z-index: -1; /* Mantener el fondo detrás de todo */
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
 .container {
-    width: 90%;
-    max-width: 400px; /* Limitar el ancho máximo en pantallas más grandes */
+    width: 95%;
+    max-width: 600px;
     background-color: #241c44;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     border-radius: 20px;
+    overflow: hidden;
     padding: 20px;
-    text-align: center; /* Asegura que el contenido esté centrado */
-    box-sizing: border-box;
+    animation: fadeIn 0.8s ease-in-out;
+    z-index: 1;
 }
 
-/* Ajustar los títulos y el tamaño del texto */
 h1 {
-    font-size: 24px;
     background-color: #5e239d;
     color: #ffffff;
-    padding: 15px;
-    margin-bottom: 10px;
+    padding: 20px;
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 2px;
+    width: 100%;
+    text-transform: uppercase;
     border-radius: 20px 20px 0 0;
-    text-align: center;
 }
 
 h2 {
-    font-size: 18px;
     color: #e1bee7;
-    margin-bottom: 20px;
+    font-size: 20px;
+    margin: 20px 0;
     text-align: center;
+    text-transform: uppercase;
 }
 
-input[type="text"], input[type="number"] {
-    width: 100%; /* Ajusta el input al tamaño completo del contenedor */
-    padding: 12px;
-    margin-bottom: 15px;
+.section {
+    width: 100%;
+    padding: 20px;
+    opacity: 0;
+    transform: translateY(30px);
+    display: none;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 90%;
+    padding: 14px;
+    margin: 10px 0;
     border-radius: 12px;
     border: 1px solid #6a1b9a;
     background-color: #302b63;
     color: #ffffff;
     font-size: 16px;
-    text-align: center; /* Centra el texto dentro del input */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
     text-transform: uppercase;
-    box-sizing: border-box;
 }
 
-/* Estilos para botones */
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: #9c27b0;
+    box-shadow: 0 0 8px rgba(156, 39, 176, 0.5);
+    outline: none;
+}
+
+/* Estilos de Botones */
 button {
-    width: 100%; /* Botones al ancho completo del contenedor */
-    padding: 12px;
+    width: 90%;
+    padding: 14px;
     margin: 10px 0;
-    border-radius: 30px; /* Bordes completamente redondeados */
-    background-color: #3498db;
+    border-radius: 12px;
+    background-color: #7b1fa2;
     color: #ffffff;
     font-size: 18px;
-    border: 2px solid transparent;
+    border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-button.red-button {
-    background-color: #e74c3c;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 button:hover {
-    background-color: #2980b9;
-    border-color: #2980b9;
-}
-
-button.red-button:hover {
-    background-color: #c0392b;
+    background-color: #8e24aa;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
 }
 
 button:active {
+    background-color: #7b1fa2;
     transform: translateY(2px);
 }
 
+/* Botones Críticos (Rojo Oscuro) */
+button.red-button {
+    background-color: #e53935;
+    color: white;
+}
+
+button.red-button:hover {
+    background-color: #d32f2f;
+}
+
+button.red-button:active {
+    background-color: #e53935;
+}
+
+.alert {
+    color: #ff5252;
+    margin: 5px 0;
+    font-size: 14px;
+    display: none;
+    text-transform: uppercase;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+li {
+    background-color: #302b63;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+    color: #ffffff;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+li:hover {
+    background-color: #3f3d56;
+    cursor: pointer;
+}
+
+video {
+    display: block;
+    margin: 20px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Animaciones de entrada */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 /* Responsive Styles */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 22px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
 @media (max-width: 480px) {
+    .container {
+        width: 100%;
+        border-radius: 0;
+    }
+
     h1 {
         font-size: 20px;
     }
@@ -100,12 +236,13 @@ button:active {
         font-size: 16px;
     }
 
-    input[type="text"], input[type="number"] {
+    button {
         font-size: 14px;
-        padding: 10px;
     }
 
-    button {
-        font-size: 16px;
+    input[type="text"],
+    input[type="number"] {
+        font-size: 14px;
+        padding: 8px;
     }
 }
