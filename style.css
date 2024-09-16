@@ -4,8 +4,8 @@
 /* Global Styles */
 body {
     font-family: 'Montserrat', sans-serif; /* Fuente diferente */
-    background-color: #1b1b2f;
-    color: #f5f5f5;
+    background-color: #121212; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto gris claro */
     margin: 0;
     padding: 0;
     display: flex;
@@ -25,7 +25,7 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle, rgba(98,0,234,0.3), rgba(0,0,0,0.9));
+    background: radial-gradient(circle, rgba(0, 150, 136, 0.3), rgba(0, 0, 0, 0.9)); /* Fondo verde oscuro */
     animation: gradientMove 10s infinite alternate;
     z-index: -1; /* Mantener el fondo detrás de todo */
 }
@@ -42,7 +42,7 @@ body::before {
 .container {
     width: 95%;
     max-width: 600px;
-    background-color: #241c44;
+    background-color: #1e1e1e; /* Fondo contenedor oscuro */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     border-radius: 20px;
     overflow: hidden;
@@ -52,7 +52,7 @@ body::before {
 }
 
 h1 {
-    background-color: #5e239d;
+    background-color: #00796b; /* Verde oscuro para el título */
     color: #ffffff;
     padding: 20px;
     margin: 0;
@@ -64,7 +64,7 @@ h1 {
 }
 
 h2 {
-    color: #e1bee7;
+    color: #80cbc4; /* Verde claro */
     font-size: 20px;
     margin: 20px 0;
     text-align: center;
@@ -92,9 +92,9 @@ input[type="number"] {
     padding: 14px;
     margin: 10px 0;
     border-radius: 12px;
-    border: 1px solid #6a1b9a;
-    background-color: #302b63;
-    color: #ffffff;
+    border: 1px solid #004d40; /* Verde oscuro en borde */
+    background-color: #333333; /* Fondo oscuro para inputs */
+    color: #e0e0e0; /* Texto claro */
     font-size: 16px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     text-transform: uppercase;
@@ -102,8 +102,8 @@ input[type="number"] {
 
 input[type="text"]:focus,
 input[type="number"]:focus {
-    border-color: #9c27b0;
-    box-shadow: 0 0 8px rgba(156, 39, 176, 0.5);
+    border-color: #00796b; /* Verde oscuro */
+    box-shadow: 0 0 8px rgba(0, 121, 107, 0.5);
     outline: none;
 }
 
@@ -113,7 +113,7 @@ button {
     padding: 14px;
     margin: 10px 0;
     border-radius: 12px;
-    background-color: #7b1fa2;
+    background-color: #4caf50; /* Verde medio */
     color: #ffffff;
     font-size: 18px;
     border: none;
@@ -124,28 +124,28 @@ button {
 }
 
 button:hover {
-    background-color: #8e24aa;
+    background-color: #66bb6a; /* Verde claro al hacer hover */
     transform: translateY(-4px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
 }
 
 button:active {
-    background-color: #7b1fa2;
+    background-color: #4caf50; /* Verde medio */
     transform: translateY(2px);
 }
 
 /* Botones Críticos (Rojo Oscuro) */
 button.red-button {
-    background-color: #e53935;
+    background-color: #d32f2f; /* Rojo oscuro */
     color: white;
 }
 
 button.red-button:hover {
-    background-color: #d32f2f;
+    background-color: #e57373; /* Rojo más claro al hacer hover */
 }
 
 button.red-button:active {
-    background-color: #e53935;
+    background-color: #d32f2f;
 }
 
 .alert {
@@ -165,7 +165,7 @@ ul {
 }
 
 li {
-    background-color: #302b63;
+    background-color: #424242; /* Fondo oscuro para listas */
     padding: 12px;
     margin: 10px 0;
     border-radius: 12px;
@@ -177,7 +177,7 @@ li {
 }
 
 li:hover {
-    background-color: #3f3d56;
+    background-color: #616161; /* Fondo más claro al hacer hover */
     cursor: pointer;
 }
 
