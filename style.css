@@ -13,7 +13,6 @@ body {
     align-items: center;
     min-height: 100vh;
     text-align: center;
-    text-transform: uppercase;
 }
 
 /* Centrado y ajuste responsivo del contenedor */
@@ -25,7 +24,7 @@ body {
     border-radius: 20px;
     padding: 20px;
     text-align: center; /* Asegura que el contenido esté centrado */
-    box-sizing: border-box; /* Incluir padding en el tamaño total */
+    box-sizing: border-box;
 }
 
 /* Ajustar los títulos y el tamaño del texto */
@@ -46,7 +45,7 @@ h2 {
     text-align: center;
 }
 
-input[type="text"] {
+input[type="text"], input[type="number"] {
     width: 100%; /* Ajusta el input al tamaño completo del contenedor */
     padding: 12px;
     margin-bottom: 15px;
@@ -57,7 +56,7 @@ input[type="text"] {
     font-size: 16px;
     text-align: center; /* Centra el texto dentro del input */
     text-transform: uppercase;
-    box-sizing: border-box; /* Incluir padding en el tamaño total */
+    box-sizing: border-box;
 }
 
 /* Estilos para botones */
@@ -69,10 +68,9 @@ button {
     background-color: #3498db;
     color: #ffffff;
     font-size: 18px;
-    border: 2px solid transparent; /* Agregar un borde transparente por si se necesita hover */
+    border: 2px solid transparent;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;
-    text-align: center; /* Asegura que el texto esté centrado */
 }
 
 button.red-button {
@@ -81,7 +79,7 @@ button.red-button {
 
 button:hover {
     background-color: #2980b9;
-    border-color: #2980b9; /* Cambia el color del borde al hacer hover */
+    border-color: #2980b9;
 }
 
 button.red-button:hover {
@@ -89,7 +87,7 @@ button.red-button:hover {
 }
 
 button:active {
-    transform: translateY(2px); /* Agregar efecto de presión */
+    transform: translateY(2px);
 }
 
 /* Responsive Styles */
@@ -102,7 +100,7 @@ button:active {
         font-size: 16px;
     }
 
-    input[type="text"] {
+    input[type="text"], input[type="number"] {
         font-size: 14px;
         padding: 10px;
     }
