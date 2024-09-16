@@ -49,6 +49,7 @@ body::before {
     padding: 20px;
     animation: fadeIn 0.8s ease-in-out;
     z-index: 1;
+    margin: 0 auto; /* Centrar horizontalmente el contenedor */
 }
 
 h1 {
@@ -78,6 +79,7 @@ h2 {
     transform: translateY(30px);
     display: none;
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    margin: 0 auto; /* Centrar horizontalmente las secciones */
 }
 
 .visible {
@@ -90,7 +92,7 @@ input[type="text"],
 input[type="number"] {
     width: 90%;
     padding: 14px;
-    margin: 10px 0;
+    margin: 10px auto; /* Centrando los inputs horizontalmente */
     border-radius: 12px;
     border: 1px solid #004d40; /* Verde oscuro en borde */
     background-color: #333333; /* Fondo oscuro para inputs */
@@ -98,6 +100,7 @@ input[type="number"] {
     font-size: 16px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     text-transform: uppercase;
+    display: block;
 }
 
 input[type="text"]:focus,
@@ -111,7 +114,7 @@ input[type="number"]:focus {
 button {
     width: 90%;
     padding: 14px;
-    margin: 10px 0;
+    margin: 10px auto; /* Centrando los botones horizontalmente */
     border-radius: 12px;
     background-color: #4caf50; /* Verde medio */
     color: #ffffff;
@@ -121,6 +124,7 @@ button {
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     text-transform: uppercase;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    display: block;
 }
 
 button:hover {
@@ -167,13 +171,14 @@ ul {
 li {
     background-color: #424242; /* Fondo oscuro para listas */
     padding: 12px;
-    margin: 10px 0;
+    margin: 10px auto; /* Centrar horizontalmente los elementos de la lista */
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease;
     color: #ffffff;
     text-align: center;
     text-transform: uppercase;
+    width: 90%;
 }
 
 li:hover {
