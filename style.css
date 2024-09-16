@@ -1,6 +1,9 @@
+/* Importar nueva fuente */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 /* Global Styles */
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif; /* Nueva fuente */
     background-color: #1b1b2f;
     color: #f5f5f5;
     margin: 0;
@@ -22,6 +25,7 @@ body {
     border-radius: 20px;
     padding: 20px;
     text-align: center; /* Asegura que el contenido esté centrado */
+    box-sizing: border-box; /* Incluir padding en el tamaño total */
 }
 
 /* Ajustar los títulos y el tamaño del texto */
@@ -53,6 +57,7 @@ input[type="text"] {
     font-size: 16px;
     text-align: center; /* Centra el texto dentro del input */
     text-transform: uppercase;
+    box-sizing: border-box; /* Incluir padding en el tamaño total */
 }
 
 /* Estilos para botones */
