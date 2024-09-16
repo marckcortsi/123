@@ -1,83 +1,53 @@
 /* Importar nueva fuente */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 /* Global Styles */
 body {
-    font-family: 'Montserrat', sans-serif; /* Fuente diferente */
-    background-color: #1b1b2f;
-    color: #f5f5f5;
+    font-family: 'Inter', sans-serif; /* Nueva fuente */
+    background-color: #f4f6f8; /* Fondo claro */
+    color: #333333; /* Texto oscuro */
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    text-align: center;
-    text-transform: uppercase; /* Texto en mayúsculas */
-    overflow: hidden; /* Para evitar scroll no deseado */
+    text-align: left;
+    overflow: hidden; /* Evitar scroll no deseado */
 }
 
-/* Fondo animado */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle, rgba(98,0,234,0.3), rgba(0,0,0,0.9));
-    animation: gradientMove 10s infinite alternate;
-    z-index: -1; /* Mantener el fondo detrás de todo */
-}
-
-@keyframes gradientMove {
-    0% {
-        background-position: 0% 50%;
-    }
-    100% {
-        background-position: 100% 50%;
-    }
-}
-
+/* Fondo claro y sombra sutil */
 .container {
     width: 95%;
-    max-width: 600px;
-    background-color: #241c44;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-    border-radius: 20px;
+    max-width: 650px;
+    background-color: #ffffff; /* Fondo blanco */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border-radius: 12px;
     overflow: hidden;
     padding: 20px;
-    animation: fadeIn 0.8s ease-in-out;
-    z-index: 1;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 h1 {
-    background-color: #5e239d;
-    color: #ffffff;
-    padding: 20px;
-    margin: 0;
-    font-size: 28px;
-    letter-spacing: 2px;
-    width: 100%;
-    text-transform: uppercase;
-    border-radius: 20px 20px 0 0;
+    color: #2c3e50; /* Título en tono oscuro */
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 15px;
 }
 
 h2 {
-    color: #e1bee7;
-    font-size: 20px;
-    margin: 20px 0;
-    text-align: center;
-    text-transform: uppercase;
+    color: #7f8c8d; /* Subtítulo en tono gris */
+    font-size: 18px;
+    margin: 10px 0 20px;
 }
 
 .section {
     width: 100%;
-    padding: 20px;
+    padding: 15px;
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
     display: none;
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .visible {
@@ -88,111 +58,99 @@ h2 {
 
 input[type="text"],
 input[type="number"] {
-    width: 90%;
-    padding: 14px;
+    width: 100%;
+    padding: 12px;
     margin: 10px 0;
-    border-radius: 12px;
-    border: 1px solid #6a1b9a;
-    background-color: #302b63;
-    color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #dfe4ea;
+    background-color: #f9fafb; /* Fondo claro */
+    color: #333333; /* Texto oscuro */
     font-size: 16px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    text-transform: uppercase;
+    transition: border-color 0.2s ease;
 }
 
 input[type="text"]:focus,
 input[type="number"]:focus {
-    border-color: #9c27b0;
-    box-shadow: 0 0 8px rgba(156, 39, 176, 0.5);
+    border-color: #2980b9; /* Borde en azul al enfocar */
     outline: none;
 }
 
 /* Estilos de Botones */
 button {
-    width: 90%;
-    padding: 14px;
-    margin: 10px 0;
-    border-radius: 12px;
-    background-color: #7b1fa2;
-    color: #ffffff;
-    font-size: 18px;
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    border-radius: 8px;
+    background-color: #3498db; /* Fondo azul */
+    color: #ffffff; /* Texto blanco */
+    font-size: 16px;
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    text-transform: uppercase;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 button:hover {
-    background-color: #8e24aa;
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    background-color: #2980b9; /* Azul más oscuro al pasar el mouse */
 }
 
 button:active {
-    background-color: #7b1fa2;
-    transform: translateY(2px);
+    background-color: #3498db;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
-/* Botones Críticos (Rojo Oscuro) */
+/* Botones Críticos (Rojo) */
 button.red-button {
-    background-color: #e53935;
+    background-color: #e74c3c; /* Fondo rojo */
     color: white;
 }
 
 button.red-button:hover {
-    background-color: #d32f2f;
+    background-color: #c0392b;
 }
 
 button.red-button:active {
-    background-color: #e53935;
+    background-color: #e74c3c;
 }
 
 .alert {
-    color: #ff5252;
+    color: #e74c3c; /* Color de alerta rojo */
     margin: 5px 0;
     font-size: 14px;
     display: none;
-    text-transform: uppercase;
 }
 
 ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    text-align: center;
-    text-transform: uppercase;
 }
 
 li {
-    background-color: #302b63;
+    background-color: #f9fafb; /* Fondo claro */
     padding: 12px;
     margin: 10px 0;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
-    color: #ffffff;
-    text-align: center;
-    text-transform: uppercase;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); /* Sombra suave */
+    color: #333333;
 }
 
 li:hover {
-    background-color: #3f3d56;
+    background-color: #f1f2f6;
     cursor: pointer;
 }
 
 video {
     display: block;
     margin: 20px auto;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Animaciones de entrada */
 @keyframes fadeIn {
     0% {
         opacity: 0;
-        transform: scale(0.9);
+        transform: scale(0.95);
     }
     100% {
         opacity: 1;
@@ -207,18 +165,16 @@ video {
     }
 
     h2 {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     button {
-        font-size: 16px;
-        padding: 12px;
+        font-size: 14px;
     }
 
     input[type="text"],
     input[type="number"] {
         font-size: 14px;
-        padding: 10px;
     }
 }
 
@@ -233,7 +189,7 @@ video {
     }
 
     h2 {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     button {
@@ -243,6 +199,6 @@ video {
     input[type="text"],
     input[type="number"] {
         font-size: 14px;
-        padding: 8px;
+        padding: 10px;
     }
 }
