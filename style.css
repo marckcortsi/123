@@ -1,204 +1,99 @@
-/* Importar nueva fuente */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-
 /* Global Styles */
 body {
-    font-family: 'Inter', sans-serif; /* Nueva fuente */
-    background-color: #f4f6f8; /* Fondo claro */
-    color: #333333; /* Texto oscuro */
+    font-family: 'Inter', sans-serif;
+    background-color: #1b1b2f;
+    color: #f5f5f5;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    text-align: left;
-    overflow: hidden; /* Evitar scroll no deseado */
+    text-align: center;
+    text-transform: uppercase;
 }
 
-/* Fondo claro y sombra sutil */
+/* Centrado y ajuste responsivo del contenedor */
 .container {
-    width: 95%;
-    max-width: 650px;
-    background-color: #ffffff; /* Fondo blanco */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    border-radius: 12px;
-    overflow: hidden;
+    width: 90%;
+    max-width: 400px; /* Limitar el ancho máximo en pantallas más grandes */
+    background-color: #241c44;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
     padding: 20px;
-    animation: fadeIn 0.5s ease-in-out;
+    text-align: center; /* Asegura que el contenido esté centrado */
 }
 
+/* Ajustar los títulos y el tamaño del texto */
 h1 {
-    color: #2c3e50; /* Título en tono oscuro */
-    font-size: 26px;
-    font-weight: 600;
-    margin-bottom: 15px;
+    font-size: 24px;
+    background-color: #5e239d;
+    color: #ffffff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 20px 20px 0 0;
 }
 
 h2 {
-    color: #7f8c8d; /* Subtítulo en tono gris */
     font-size: 18px;
-    margin: 10px 0 20px;
+    color: #e1bee7;
+    margin-bottom: 20px;
 }
 
-.section {
-    width: 100%;
-    padding: 15px;
-    opacity: 0;
-    transform: translateY(20px);
-    display: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+input[type="text"] {
+    width: 100%; /* Ajusta el input al tamaño completo del contenedor */
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border: 1px solid #6a1b9a;
+    background-color: #302b63;
+    color: #ffffff;
+    font-size: 16px;
+    text-transform: uppercase;
 }
 
-.visible {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-input[type="text"],
-input[type="number"] {
-    width: 100%;
+/* Estilos para botones */
+button {
+    width: 100%; /* Botones al ancho completo del contenedor */
     padding: 12px;
     margin: 10px 0;
-    border-radius: 8px;
-    border: 1px solid #dfe4ea;
-    background-color: #f9fafb; /* Fondo claro */
-    color: #333333; /* Texto oscuro */
-    font-size: 16px;
-    transition: border-color 0.2s ease;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus {
-    border-color: #2980b9; /* Borde en azul al enfocar */
-    outline: none;
-}
-
-/* Estilos de Botones */
-button {
-    width: 100%;
-    padding: 12px;
-    margin: 15px 0;
-    border-radius: 8px;
-    background-color: #3498db; /* Fondo azul */
-    color: #ffffff; /* Texto blanco */
-    font-size: 16px;
+    border-radius: 12px;
+    background-color: #3498db;
+    color: #ffffff;
+    font-size: 18px;
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s ease;
+}
+
+button.red-button {
+    background-color: #e74c3c;
 }
 
 button:hover {
-    background-color: #2980b9; /* Azul más oscuro al pasar el mouse */
-}
-
-button:active {
-    background-color: #3498db;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
-}
-
-/* Botones Críticos (Rojo) */
-button.red-button {
-    background-color: #e74c3c; /* Fondo rojo */
-    color: white;
+    background-color: #2980b9;
 }
 
 button.red-button:hover {
     background-color: #c0392b;
 }
 
-button.red-button:active {
-    background-color: #e74c3c;
-}
-
-.alert {
-    color: #e74c3c; /* Color de alerta rojo */
-    margin: 5px 0;
-    font-size: 14px;
-    display: none;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-li {
-    background-color: #f9fafb; /* Fondo claro */
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); /* Sombra suave */
-    color: #333333;
-}
-
-li:hover {
-    background-color: #f1f2f6;
-    cursor: pointer;
-}
-
-video {
-    display: block;
-    margin: 20px auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Animaciones de entrada */
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
 /* Responsive Styles */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     h1 {
-        font-size: 22px;
+        font-size: 20px;
     }
 
     h2 {
         font-size: 16px;
     }
 
-    button {
-        font-size: 14px;
-    }
-
-    input[type="text"],
-    input[type="number"] {
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        width: 100%;
-        border-radius: 0;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-
-    h2 {
-        font-size: 14px;
-    }
-
-    button {
-        font-size: 14px;
-    }
-
-    input[type="text"],
-    input[type="number"] {
+    input[type="text"] {
         font-size: 14px;
         padding: 10px;
+    }
+
+    button {
+        font-size: 16px;
     }
 }
