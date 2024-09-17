@@ -3,9 +3,9 @@
 
 /* Global Styles */
 body {
-    font-family: 'Montserrat', sans-serif; /* Fuente diferente */
-    background-color: #121212; /* Fondo oscuro */
-    color: #e0e0e0; /* Texto gris claro */
+    font-family: 'Montserrat', sans-serif;
+    background-color: #121212; /* Fondo oscuro para modo noche */
+    color: #ffffff; /* Texto claro para modo noche */
     margin: 0;
     padding: 0;
     display: flex;
@@ -13,199 +13,146 @@ body {
     align-items: center;
     min-height: 100vh;
     text-align: center;
-    text-transform: uppercase; /* Texto en mayúsculas */
     overflow: hidden; /* Para evitar scroll no deseado */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Fondo animado */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle, rgba(0, 150, 136, 0.3), rgba(0, 0, 0, 0.9)); /* Fondo verde oscuro */
-    animation: gradientMove 10s infinite alternate;
-    z-index: -1; /* Mantener el fondo detrás de todo */
+/* Fondo completamente blanco en modo claro */
+body.light-mode {
+    background-color: #ffffff; /* Fondo blanco para modo día */
+    color: #333333; /* Texto oscuro para modo día */
 }
 
-@keyframes gradientMove {
-    0% {
-        background-position: 0% 50%;
-    }
-    100% {
-        background-position: 100% 50%;
-    }
-}
-
+/* Contenedor principal */
 .container {
     width: 95%;
     max-width: 600px;
-    background-color: #1e1e1e; /* Fondo contenedor oscuro */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    background-color: transparent; /* Sin fondo */
     border-radius: 20px;
     overflow: hidden;
     padding: 20px;
     animation: fadeIn 0.8s ease-in-out;
     z-index: 1;
-    margin: 0 auto; /* Centrar horizontalmente el contenedor */
+    margin: 0 auto;
+    transition: background-color 0.3s ease;
 }
 
+/* Título: Cambia a blanco en modo noche y a negro en modo día */
 h1 {
-    background-color: #00796b; /* Verde oscuro para el título */
-    color: #ffffff;
-    padding: 20px;
-    margin: 0;
+    color: #ffffff; /* Blanco en modo nocturno */
+    padding: 10px;
     font-size: 28px;
     letter-spacing: 2px;
     width: 100%;
     text-transform: uppercase;
-    border-radius: 20px 20px 0 0;
+    margin: 0;
+    transition: color 0.3s ease;
 }
 
-h2 {
-    color: #80cbc4; /* Verde claro */
-    font-size: 20px;
-    margin: 20px 0;
-    text-align: center;
-    text-transform: uppercase;
+/* Título en modo claro (día) */
+body.light-mode h1 {
+    color: #000000; /* Negro para modo claro */
 }
 
+/* Sección oculta por defecto */
 .section {
     width: 100%;
     padding: 20px;
     opacity: 0;
     transform: translateY(30px);
-    display: none;
+    display: none; /* Oculta por defecto */
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    margin: 0 auto; /* Centrar horizontalmente las secciones */
+    margin: 0 auto;
 }
 
+/* Sección visible */
 .visible {
     display: block;
     opacity: 1;
     transform: translateY(0);
 }
 
+/* Estilos de Input */
 input[type="text"],
 input[type="number"] {
     width: 90%;
     padding: 14px;
     margin: 10px auto; /* Centrando los inputs horizontalmente */
-    border-radius: 12px;
+    border-radius: 8px;
     border: 1px solid #004d40; /* Verde oscuro en borde */
-    background-color: #333333; /* Fondo oscuro para inputs */
-    color: #e0e0e0; /* Texto claro */
+    background-color: #f0f0f0; /* Fondo claro para inputs */
+    color: #333333; /* Texto oscuro */
     font-size: 16px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
     text-transform: uppercase;
     display: block;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus {
-    border-color: #00796b; /* Verde oscuro */
-    box-shadow: 0 0 8px rgba(0, 121, 107, 0.5);
-    outline: none;
 }
 
 /* Estilos de Botones */
 button {
     width: 90%;
     padding: 14px;
-    margin: 10px auto; /* Centrando los botones horizontalmente */
-    border-radius: 12px;
-    background-color: #4caf50; /* Verde medio */
+    margin: 10px auto;
+    border-radius: 8px;
+    background-color: #004080; /* Azul */
     color: #ffffff;
     font-size: 18px;
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     text-transform: uppercase;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     display: block;
+    text-align: center;
 }
 
+/* Botón al hacer hover */
 button:hover {
-    background-color: #66bb6a; /* Verde claro al hacer hover */
+    background-color: #003366; /* Azul más oscuro al hacer hover */
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
+/* Botón activo */
 button:active {
-    background-color: #4caf50; /* Verde medio */
     transform: translateY(2px);
 }
 
-/* Botones Críticos (Rojo Oscuro) */
+/* Botón para regresar */
 button.red-button {
     background-color: #d32f2f; /* Rojo oscuro */
-    color: white;
 }
 
 button.red-button:hover {
-    background-color: #e57373; /* Rojo más claro al hacer hover */
+    background-color: #e57373; /* Rojo más claro */
 }
 
-button.red-button:active {
-    background-color: #d32f2f;
+/* Botones en modo claro */
+body.light-mode button {
+    background-color: #4c8bf5; /* Azul claro */
+    color: #ffffff;
 }
 
-.alert {
-    color: #ff5252;
-    margin: 5px 0;
-    font-size: 14px;
-    display: none;
-    text-transform: uppercase;
-}
-
-ul {
-    list-style-type: none;
+/* Botón de cambio de tema (sin fondo, pequeño, sin animaciones) */
+.theme-toggle {
+    position: fixed;
+    top: 10px; /* Parte superior */
+    left: 10px; /* Esquina izquierda */
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem; /* Tamaño pequeño */
+    color: #ffffff;
     padding: 0;
     margin: 0;
-    text-align: center;
-    text-transform: uppercase;
+    transition: none; /* Sin animaciones */
 }
 
-li {
-    background-color: #424242; /* Fondo oscuro para listas */
-    padding: 12px;
-    margin: 10px auto; /* Centrar horizontalmente los elementos de la lista */
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
-    color: #ffffff;
-    text-align: center;
-    text-transform: uppercase;
-    width: 90%;
+/* Botón de cambio de tema en modo claro */
+body.light-mode .theme-toggle {
+    color: #333333;
 }
 
-li:hover {
-    background-color: #616161; /* Fondo más claro al hacer hover */
-    cursor: pointer;
-}
-
-video {
-    display: block;
-    margin: 20px auto;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* Animaciones de entrada */
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Responsive Styles */
+/* Responsivo */
 @media (max-width: 768px) {
     h1 {
         font-size: 22px;
@@ -230,19 +177,16 @@ video {
 @media (max-width: 480px) {
     .container {
         width: 100%;
-        border-radius: 0;
+        padding: 10px;
     }
 
     h1 {
         font-size: 20px;
     }
 
-    h2 {
-        font-size: 16px;
-    }
-
     button {
         font-size: 14px;
+        padding: 10px;
     }
 
     input[type="text"],

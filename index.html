@@ -9,6 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 </head>
 <body>
+    <!-- Botón para alternar entre tema claro y oscuro -->
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+
     <div class="container">
         <h1>Registro de Series</h1>
 
@@ -52,5 +55,33 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="script.js"></script> <!-- Asegúrate de enlazar correctamente tu archivo JS -->
+
+    <script>
+        // Selecciona el botón de alternar tema
+        const themeToggle = document.getElementById('themeToggle');
+
+        // Almacena el estado del modo en localStorage para recordar la preferencia del usuario
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            document.body.classList.add(currentTheme);
+            if (currentTheme === 'light-mode') {
+                themeToggle.textContent = '🌞'; // Icono de sol
+            }
+        }
+
+        // Alternar entre modo claro y oscuro
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const theme = document.body.classList.contains('light-mode') ? 'light-mode' : 'dark-mode';
+            localStorage.setItem('theme', theme);
+
+            // Cambiar el icono
+            if (theme === 'light-mode') {
+                themeToggle.textContent = '🌞'; // Icono de sol
+            } else {
+                themeToggle.textContent = '🌙'; // Icono de luna
+            }
+        });
+    </script>
 </body>
 </html>
