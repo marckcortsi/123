@@ -270,6 +270,14 @@
         setTimeout(() => {
             themeToggle.style.display = 'none'; // Oculta el botón completamente
         }, 5000);
+
+        // Deshabilitar el deslizamiento para actualizar la página en dispositivos móviles
+        document.addEventListener('touchmove', function(event) {
+            if (event.touches.length > 1 || event.scale && event.scale !== 1) {
+                event.preventDefault(); // Prevenir el comportamiento de zoom o actualización
+            }
+        }, { passive: false });
+
     </script>
 </body>
 </html>
