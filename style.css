@@ -11,10 +11,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh; /* Ocupa el 100% de la altura de la pantalla */
     text-align: center;
-    overflow: hidden; /* Para evitar scroll no deseado */
     transition: background-color 0.3s ease, color 0.3s ease;
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total */
 }
 
 /* Fondo completamente blanco en modo claro */
@@ -25,15 +25,17 @@ body.light-mode {
 
 /* Contenedor principal */
 .container {
-    width: 95%;
-    max-width: 600px;
-    background-color: transparent; /* Sin fondo */
-    border-radius: 20px;
-    overflow: hidden;
+    width: 100%;
+    max-width: 400px; /* Ancho máximo para el contenedor */
     padding: 20px;
-    animation: fadeIn 0.8s ease-in-out;
-    z-index: 1;
     margin: 0 auto;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 10px;
     transition: background-color 0.3s ease;
 }
 
@@ -43,9 +45,8 @@ h1 {
     padding: 10px;
     font-size: 28px;
     letter-spacing: 2px;
-    width: 100%;
     text-transform: uppercase;
-    margin: 0;
+    margin-bottom: 20px;
     transition: color 0.3s ease;
 }
 
@@ -54,44 +55,42 @@ body.light-mode h1 {
     color: #000000; /* Negro para modo claro */
 }
 
-/* Sección oculta por defecto */
+/* Secciones ocultas por defecto */
 .section {
-    width: 100%;
-    padding: 20px;
-    opacity: 0;
-    transform: translateY(30px);
-    display: none; /* Oculta por defecto */
+    display: none; /* Oculta todas las secciones por defecto */
+    opacity: 0; /* Transición suave de entrada */
+    transform: translateY(30px); /* Inicia con desplazamiento */
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    margin: 0 auto;
 }
 
-/* Sección visible */
-.visible {
+/* Mostrar la sección cuando se activa */
+.section.visible {
     display: block;
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0); /* Sección visible y en su lugar */
 }
 
 /* Estilos de Input */
 input[type="text"],
 input[type="number"] {
-    width: 90%;
+    width: 100%; /* Ocupa todo el contenedor */
     padding: 14px;
-    margin: 10px auto; /* Centrando los inputs horizontalmente */
+    margin: 10px 0; /* Espaciado superior e inferior */
     border-radius: 8px;
     border: 1px solid #004d40; /* Verde oscuro en borde */
     background-color: #f0f0f0; /* Fondo claro para inputs */
     color: #333333; /* Texto oscuro */
     font-size: 16px;
     text-transform: uppercase;
+    box-sizing: border-box;
     display: block;
 }
 
 /* Estilos de Botones */
 button {
-    width: 90%;
+    width: 100%; /* Ocupa el 100% del contenedor */
     padding: 14px;
-    margin: 10px auto;
+    margin: 10px 0; /* Espaciado superior e inferior */
     border-radius: 8px;
     background-color: #004080; /* Azul */
     color: #ffffff;
@@ -101,7 +100,6 @@ button {
     text-transform: uppercase;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    display: block;
     text-align: center;
 }
 
@@ -132,19 +130,18 @@ body.light-mode button {
     color: #ffffff;
 }
 
-/* Botón de cambio de tema (sin fondo, pequeño, sin animaciones) */
+/* Botón de cambio de tema */
 .theme-toggle {
     position: fixed;
-    top: 10px; /* Parte superior */
-    left: 10px; /* Esquina izquierda */
+    top: 10px;
+    left: 10px;
     background-color: transparent;
     border: none;
     cursor: pointer;
-    font-size: 1.2rem; /* Tamaño pequeño */
+    font-size: 1.2rem;
     color: #ffffff;
     padding: 0;
     margin: 0;
-    transition: none; /* Sin animaciones */
 }
 
 /* Botón de cambio de tema en modo claro */
@@ -152,14 +149,10 @@ body.light-mode .theme-toggle {
     color: #333333;
 }
 
-/* Responsivo */
+/* Adaptación para Pantallas Pequeñas (Móviles) */
 @media (max-width: 768px) {
     h1 {
         font-size: 22px;
-    }
-
-    h2 {
-        font-size: 18px;
     }
 
     button {
@@ -172,11 +165,14 @@ body.light-mode .theme-toggle {
         font-size: 14px;
         padding: 10px;
     }
+
+    .theme-toggle {
+        font-size: 1rem; /* Tamaño más pequeño del ícono en móvil */
+    }
 }
 
 @media (max-width: 480px) {
     .container {
-        width: 100%;
         padding: 10px;
     }
 
