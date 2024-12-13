@@ -1,194 +1,160 @@
-// Variables globales
-let scannedSerials = JSON.parse(localStorage.getItem('scannedSerials')) || [];
-let productSerials = JSON.parse(localStorage.getItem('productSerials')) || {};
-let currentProduct = null;
+document.addEventListener('DOMContentLoaded', () => {
+    // Variables globales
+    let scannedSerials = [];
+    let productSerials = {};
+    let currentProduct = null;
 
-// Función para emitir un sonido al registrar un serial
-function playBeep() {
-    const beep = new Audio('https://www.soundjay.com/button/beep-07.wav');
-    beep.play();
-}
+    const startButton = document.getElementById('startButton');
+    const productSection = document.getElementById('productSection');
+    const seriesSection = document.getElementById('seriesSection');
+    const finishSection = document.getElementById('finishSection');
+    const registerModeSelector = document.getElementById('registerMode');
+    const seriesCodeInput = document.getElementById('seriesCode');
+    const seriesQuantityInput = document.getElementById('seriesQuantity');
+    const registerSeriesButton = document.getElementById('registerSeries');
+    const newProductButton = document.getElementById('newProduct');
+    const finishButton = document.getElementById('finish');
+    const generateReportButton = document.getElementById('generateReport');
+    const orderNumberInput = document.getElementById('orderNumber');
+    const counter = document.getElementById('counter');
 
-// Función para mostrar mensajes de error
-function showError(elementId, message) {
-    const errorDiv = document.getElementById(elementId);
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
-}
-
-// Función para ocultar el mensaje de error
-function hideError(elementId) {
-    document.getElementById(elementId).style.display = 'none';
-}
-
-// Función para actualizar el contador de series
-function updateCounter() {
-    if (currentProduct && productSerials[currentProduct]) {
-        let seriesCount = productSerials[currentProduct].length;
-        document.getElementById('counter').textContent = `Registrando: ${currentProduct} | Series: ${seriesCount}`;
-    } else {
-        document.getElementById('counter').textContent = 'Registrando: Producto | Series: 0';
-    }
-    localStorage.setItem('productSerials', JSON.stringify(productSerials));  // Guardar en localStorage
-}
-
-// Función para iniciar el registro al hacer clic en el botón "Comenzar"
-document.getElementById('startButton').addEventListener('click', function () {
-    document.getElementById('startButton').style.display = 'none';
-    document.getElementById('viewReportsButton').style.display = 'none';  // Ocultar el botón de ver reportes
-    document.getElementById('reportList').style.display = 'none';  // Ocultar la lista de reportes
-    document.getElementById('productSection').classList.add('visible');
-    currentProduct = null;
-    updateCounter();
-});
-
-// Función para aceptar el código de producto y mostrar la sección de series
-document.getElementById('acceptProduct').addEventListener('click', function () {
-    const productCode = document.getElementById('productCode').value.trim();
-
-    if (!productCode) {
-        showError('productError', 'Por favor, ingrese un código de producto válido.');
-        return;
+    // Mostrar una sección
+    function showSection(section) {
+        document.querySelectorAll('.section').forEach((el) => el.classList.remove('visible'));
+        section.classList.add('visible');
     }
 
-    hideError('productError');
-    document.getElementById('productSection').classList.remove('visible');
-    document.getElementById('seriesSection').classList.add('visible');
+    // Iniciar flujo
+    startButton.addEventListener('click', () => {
+        currentProduct = null;
+        showSection(productSection);
+    });
 
-    currentProduct = productCode;
+    // Aceptar producto
+    document.getElementById('acceptProduct').addEventListener('click', () => {
+        const productCode = document.getElementById('productCode').value.trim().toUpperCase();
+        if (!productCode) {
+            alert('Por favor, ingrese un código de producto válido.');
+            return;
+        }
+        currentProduct = productCode;
+        if (!productSerials[currentProduct]) {
+            productSerials[currentProduct] = [];
+        }
+        updateCounter();
+        showSection(seriesSection);
+    });
 
-    // Si este producto no ha sido registrado antes, crear un nuevo espacio para él
-    if (!productSerials[productCode]) {
-        productSerials[productCode] = [];
-    }
+    // Registrar series
+    registerSeriesButton.addEventListener('click', registerSeries);
 
-    updateCounter();
-});
+    // Detectar Enter solo en modo "serie por serie"
+    seriesCodeInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && registerModeSelector.value === 'single') {
+            registerSeries();
+        }
+    });
 
-// Función para cancelar y regresar a la sección de registro de seriales o productos
-document.getElementById('backToSeriesFromProduct').addEventListener('click', function () {
-    if (currentProduct) {
-        document.getElementById('productSection').classList.remove('visible');
-        document.getElementById('seriesSection').classList.add('visible');
-    } else {
-        document.getElementById('productSection').classList.remove('visible');
-        document.getElementById('startButton').style.display = 'block';
-        document.getElementById('viewReportsButton').style.display = 'block';
-    }
-});
+    // Función para manejar el registro de series
+    function registerSeries() {
+        const mode = registerModeSelector.value;
+        const seriesCode = seriesCodeInput.value.trim().toUpperCase();
+        const seriesQuantity = parseInt(seriesQuantityInput.value.trim()) || 1;
 
-// Función para registrar serie junto con la cantidad consecutiva
-document.getElementById('registerSeries').addEventListener('click', function () {
-    let seriesCode = document.getElementById('seriesCode').value.trim();
-    let seriesQuantity = parseInt(document.getElementById('seriesQuantity').value.trim()) || 1;  // Si no se ingresa cantidad, asumir 1
-
-    if (!seriesCode) {
-        showError('seriesError', 'Por favor, ingrese un código de serie válido.');
-        return;
-    }
-
-    seriesCode = parseInt(seriesCode);  // Asegurarse de que el código sea un número
-
-    for (let i = 0; i < seriesQuantity; i++) {
-        let currentSerial = (seriesCode + i).toString();
-
-        if (productSerials[currentProduct].includes(currentSerial)) {
-            showError('seriesError', `El código de serie ${currentSerial} ya ha sido registrado para este producto.`);
+        if (!seriesCode) {
+            alert('Por favor, ingrese un código de serie válido.');
             return;
         }
 
-        // Registrar el serial para el producto actual
-        productSerials[currentProduct].push(currentSerial);
-        scannedSerials.push({ code: currentSerial, product: currentProduct });
+        if (mode === 'single') {
+            if (productSerials[currentProduct].includes(seriesCode)) {
+                alert(`El código de serie (${seriesCode}) ya ha sido registrado.`);
+            } else {
+                productSerials[currentProduct].push(seriesCode);
+                updateCounter();
+            }
+        } else if (mode === 'batch') {
+            for (let i = 0; i < seriesQuantity; i++) {
+                const currentSerial = `${parseInt(seriesCode) + i}`.toUpperCase();
+                if (productSerials[currentProduct].includes(currentSerial)) {
+                    alert(`El código de serie (${currentSerial}) ya ha sido registrado.`);
+                    break;
+                }
+                productSerials[currentProduct].push(currentSerial);
+            }
+            updateCounter();
+        }
+
+        seriesCodeInput.value = '';
+        seriesQuantityInput.value = '';
     }
 
-    hideError('seriesError');
-    playBeep();
-    updateCounter();
-
-    // Limpiar los campos de entrada de serie y cantidad
-    document.getElementById('seriesCode').value = '';
-    document.getElementById('seriesQuantity').value = '';
-});
-
-// Botón para registrar un nuevo producto sin regresar al inicio
-document.getElementById('newProduct').addEventListener('click', function () {
-    document.getElementById('seriesSection').classList.remove('visible');
-    document.getElementById('productSection').classList.add('visible');
-    document.getElementById('productCode').value = '';  // Limpiar el campo de producto
-    updateCounter();
-});
-
-// Función para finalizar y generar el reporte
-document.getElementById('finish').addEventListener('click', function () {
-    document.getElementById('seriesSection').classList.remove('visible');
-    document.getElementById('finishSection').classList.add('visible');
-});
-
-// Función para generar el reporte
-document.getElementById('generateReport').addEventListener('click', function () {
-    const orderNumber = document.getElementById('orderNumber').value.trim();
-
-    if (!orderNumber) {
-        showError('reportError', 'Por favor, ingrese un número de pedido válido.');
-        return;
+    // Actualizar contador
+    function updateCounter() {
+        const count = productSerials[currentProduct]?.length || 0;
+        counter.textContent = `Registrando: ${currentProduct} | Series: ${count}`;
     }
 
-    let workbook = XLSX.utils.book_new();
-    let worksheetData = [];
+    // Cambiar modo de registro
+    registerModeSelector.addEventListener('change', () => {
+        const mode = registerModeSelector.value;
+        seriesQuantityInput.style.display = mode === 'batch' ? 'block' : 'none';
+    });
 
-    // Encabezados de productos
-    worksheetData.push(Object.keys(productSerials));
+    // Registrar nuevo producto
+    newProductButton.addEventListener('click', () => {
+        currentProduct = null;
+        showSection(productSection);
+        seriesCodeInput.value = '';
+        seriesQuantityInput.value = '';
+    });
 
-    // Seriales debajo de cada producto
-    const maxRows = Math.max(...Object.values(productSerials).map(arr => arr.length));
-    for (let i = 0; i < maxRows; i++) {
-        const row = Object.keys(productSerials).map(product => productSerials[product][i] || "");
-        worksheetData.push(row);
-    }
+    // Finalizar registro
+    finishButton.addEventListener('click', () => {
+        showSection(finishSection);
+    });
 
-    let worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Series');
-    XLSX.writeFile(workbook, `${orderNumber}.xlsx`);
+    // Generar reporte
+    generateReportButton.addEventListener('click', () => {
+        const orderNumber = orderNumberInput.value.trim().toUpperCase();
 
-    // Guardar en localStorage los reportes generados
-    let previousReports = JSON.parse(localStorage.getItem('reports')) || [];
-    previousReports.push({ orderNumber, data: worksheetData });
-    localStorage.setItem('reports', JSON.stringify(previousReports));
+        if (!orderNumber) {
+            alert('Por favor, ingrese un número de pedido válido.');
+            return;
+        }
 
-    // Reiniciar la interfaz
-    productSerials = {};
-    scannedSerials = [];
-    localStorage.removeItem('productSerials');
-    localStorage.removeItem('scannedSerials');
-    document.getElementById('finishSection').classList.remove('visible');
-    document.getElementById('startButton').style.display = 'block';
-    document.getElementById('viewReportsButton').style.display = 'block';
-    document.getElementById('reportList').style.display = 'block';
-});
+        if (Object.keys(productSerials).length === 0) {
+            alert('No hay series registradas para generar un reporte.');
+            return;
+        }
 
-// Botón para regresar desde la sección de finalizar
-document.getElementById('backToSeriesFromFinish').addEventListener('click', function () {
-    document.getElementById('finishSection').classList.remove('visible');
-    document.getElementById('seriesSection').classList.add('visible');
-});
+        // Crear hoja de cálculo con los datos
+        const workbook = XLSX.utils.book_new();
+        const worksheetData = [];
 
-// Función para mostrar reportes anteriores (solo desde el inicio)
-document.getElementById('viewReportsButton').addEventListener('click', function () {
-    const reportList = document.getElementById('reportList');
-    reportList.innerHTML = '';  // Limpiar la lista
+        // Encabezados: nombres de los productos en mayúsculas
+        const headers = Object.keys(productSerials).map((product) => product.toUpperCase());
+        worksheetData.push(headers);
 
-    let reports = JSON.parse(localStorage.getItem('reports')) || [];
-    reports.forEach(report => {
-        let reportItem = document.createElement('li');
-        reportItem.textContent = `Reporte ${report.orderNumber}`;
-        reportItem.addEventListener('click', function () {
-            // Descargar el reporte al hacer clic
-            let workbook = XLSX.utils.book_new();
-            let worksheet = XLSX.utils.aoa_to_sheet(report.data);
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Series');
-            XLSX.writeFile(workbook, `${report.orderNumber}.xlsx`);
-        });
-        reportList.appendChild(reportItem);
+        // Organizar las series por columnas
+        const maxLength = Math.max(...Object.values(productSerials).map((series) => series.length));
+        for (let i = 0; i < maxLength; i++) {
+            const row = headers.map((product) => productSerials[product]?.[i]?.toUpperCase() || '');
+            worksheetData.push(row);
+        }
+
+        const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Series Registradas');
+        XLSX.writeFile(workbook, `${orderNumber}.xlsx`);
+
+        alert(`Reporte generado exitosamente: ${orderNumber}.xlsx`);
+
+        // Reiniciar datos
+        productSerials = {};
+        scannedSerials = [];
+        currentProduct = null;
+        orderNumberInput.value = '';
+        updateCounter();
+        showSection(startButton);
     });
 });

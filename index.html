@@ -4,280 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Series</title>
-    <link rel="stylesheet" href="style.css"> <!-- Enlace al archivo CSS -->
-    <!-- Librería jsQR para escaneo de códigos QR -->
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-    <!-- Botón para alternar entre tema claro y oscuro -->
-    <button class="theme-toggle" id="themeToggle">🌙</button>
-
     <div class="container">
         <h1>Registro de Series</h1>
 
-        <!-- Sección de inicio -->
+        <!-- Botones iniciales -->
         <button id="startButton" class="section visible">Comenzar</button>
-
-        <!-- Botón para ver reportes anteriores -->
         <button id="viewReportsButton" class="section visible">Ver Reportes Anteriores</button>
-        <ul id="reportList" class="section"></ul> <!-- Lista de reportes anteriores -->
 
-        <!-- Sección para ingresar el código del producto -->
+        <!-- Sección para ingresar producto -->
         <div id="productSection" class="section">
             <h2>Ingresar código de producto</h2>
             <input type="text" id="productCode" placeholder="Código de producto">
             <button id="acceptProduct">Aceptar</button>
             <div id="productError" class="alert">Por favor, ingrese un código de producto válido.</div>
-            <button id="backToSeriesFromProduct" class="red-button">Regresar</button>
         </div>
 
         <!-- Sección para registrar series -->
         <div id="seriesSection" class="section">
+            <label for="registerMode">Modo de registro:</label>
+            <select id="registerMode">
+                <option value="single">Serie por serie</option>
+                <option value="batch">Por cantidades</option>
+            </select>
             <div id="counter">Registrando: Producto | Series: 0</div>
-            <h2>Escanear o ingresar serie</h2>
             <input type="text" id="seriesCode" placeholder="Código de serie">
-            <input type="number" id="seriesQuantity" placeholder="Cantidad (Opcional)">
+            <input type="number" id="seriesQuantity" placeholder="Cantidad (Opcional)" style="display: none;">
             <button id="registerSeries">Registrar Serie</button>
             <button id="newProduct">Registrar Nuevo Producto</button>
             <button id="finish">Finalizar</button>
             <div id="seriesError" class="alert">Por favor, ingrese un código de serie válido.</div>
         </div>
 
-        <!-- Sección para finalizar y descargar reporte -->
+        <!-- Sección para finalizar -->
         <div id="finishSection" class="section">
             <h2>Finalizar Pedido</h2>
             <input type="text" id="orderNumber" placeholder="Número de pedido">
             <button id="generateReport">Generar Reporte</button>
             <div id="reportError" class="alert">Por favor, ingrese un número de pedido válido.</div>
-            <button id="backToSeriesFromFinish" class="red-button">Regresar</button>
         </div>
     </div>
 
-    <!-- Aquí se incluye el script directamente en el HTML -->
-    <script>
-        // Variables globales
-        let scannedSerials = JSON.parse(localStorage.getItem('scannedSerials')) || [];
-        let productSerials = JSON.parse(localStorage.getItem('productSerials')) || {};
-        let currentProduct = null;
-
-        // Función para emitir un sonido al registrar un serial
-        function playBeep() {
-            const beep = new Audio('https://www.soundjay.com/button/beep-07.wav');
-            beep.play();
-        }
-
-        // Función para mostrar mensajes de error
-        function showError(elementId, message) {
-            const errorDiv = document.getElementById(elementId);
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-
-        // Función para ocultar el mensaje de error
-        function hideError(elementId) {
-            document.getElementById(elementId).style.display = 'none';
-        }
-
-        // Función para actualizar el contador de series
-        function updateCounter() {
-            if (currentProduct && productSerials[currentProduct]) {
-                let seriesCount = productSerials[currentProduct].length;
-                document.getElementById('counter').textContent = `Registrando: ${currentProduct} | Series: ${seriesCount}`;
-            } else {
-                document.getElementById('counter').textContent = 'Registrando: Producto | Series: 0';
-            }
-            localStorage.setItem('productSerials', JSON.stringify(productSerials));  // Guardar en localStorage
-        }
-
-        // Función para iniciar el registro al hacer clic en el botón "Comenzar"
-        document.getElementById('startButton').addEventListener('click', function () {
-            document.getElementById('startButton').style.display = 'none';
-            document.getElementById('viewReportsButton').style.display = 'none';  // Ocultar el botón de ver reportes
-            document.getElementById('reportList').style.display = 'none';  // Ocultar la lista de reportes
-            document.getElementById('productSection').classList.add('visible');
-            currentProduct = null;
-            updateCounter();
-        });
-
-        // Función para aceptar el código de producto y mostrar la sección de series
-        document.getElementById('acceptProduct').addEventListener('click', function () {
-            const productCode = document.getElementById('productCode').value.trim();
-
-            if (!productCode) {
-                showError('productError', 'Por favor, ingrese un código de producto válido.');
-                return;
-            }
-
-            hideError('productError');
-            document.getElementById('productSection').classList.remove('visible');
-            document.getElementById('seriesSection').classList.add('visible');
-
-            currentProduct = productCode;
-
-            // Si este producto no ha sido registrado antes, crear un nuevo espacio para él
-            if (!productSerials[productCode]) {
-                productSerials[productCode] = [];
-            }
-
-            updateCounter();
-        });
-
-        // Función para cancelar y regresar a la sección de registro de seriales o productos
-        document.getElementById('backToSeriesFromProduct').addEventListener('click', function () {
-            if (currentProduct) {
-                document.getElementById('productSection').classList.remove('visible');
-                document.getElementById('seriesSection').classList.add('visible');
-            } else {
-                document.getElementById('productSection').classList.remove('visible');
-                document.getElementById('startButton').style.display = 'block';
-                document.getElementById('viewReportsButton').style.display = 'block';
-            }
-        });
-
-        // Función para registrar serie junto con la cantidad consecutiva
-        document.getElementById('registerSeries').addEventListener('click', function () {
-            let seriesCode = document.getElementById('seriesCode').value.trim();
-            let seriesQuantity = parseInt(document.getElementById('seriesQuantity').value.trim()) || 1;  // Si no se ingresa cantidad, asumir 1
-
-            if (!seriesCode) {
-                showError('seriesError', 'Por favor, ingrese un código de serie válido.');
-                return;
-            }
-
-            seriesCode = parseInt(seriesCode);  // Asegurarse de que el código sea un número
-
-            for (let i = 0; i < seriesQuantity; i++) {
-                let currentSerial = (seriesCode + i).toString();
-
-                if (productSerials[currentProduct].includes(currentSerial)) {
-                    showError('seriesError', `El código de serie ${currentSerial} ya ha sido registrado para este producto.`);
-                    return;
-                }
-
-                // Registrar el serial para el producto actual
-                productSerials[currentProduct].push(currentSerial);
-                scannedSerials.push({ code: currentSerial, product: currentProduct });
-            }
-
-            hideError('seriesError');
-            playBeep();
-            updateCounter();
-
-            // Limpiar los campos de entrada de serie y cantidad
-            document.getElementById('seriesCode').value = '';
-            document.getElementById('seriesQuantity').value = '';
-        });
-
-        // Botón para registrar un nuevo producto sin regresar al inicio
-        document.getElementById('newProduct').addEventListener('click', function () {
-            document.getElementById('seriesSection').classList.remove('visible');
-            document.getElementById('productSection').classList.add('visible');
-            document.getElementById('productCode').value = '';  // Limpiar el campo de producto
-            updateCounter();
-        });
-
-        // Función para finalizar y generar el reporte
-        document.getElementById('finish').addEventListener('click', function () {
-            document.getElementById('seriesSection').classList.remove('visible');
-            document.getElementById('finishSection').classList.add('visible');
-        });
-
-        // Función para generar el reporte
-        document.getElementById('generateReport').addEventListener('click', function () {
-            const orderNumber = document.getElementById('orderNumber').value.trim();
-
-            if (!orderNumber) {
-                showError('reportError', 'Por favor, ingrese un número de pedido válido.');
-                return;
-            }
-
-            let workbook = XLSX.utils.book_new();
-            let worksheetData = [];
-
-            // Encabezados de productos
-            worksheetData.push(Object.keys(productSerials));
-
-            // Seriales debajo de cada producto
-            const maxRows = Math.max(...Object.values(productSerials).map(arr => arr.length));
-            for (let i = 0; i < maxRows; i++) {
-                const row = Object.keys(productSerials).map(product => productSerials[product][i] || "");
-                worksheetData.push(row);
-            }
-
-            let worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Series');
-            XLSX.writeFile(workbook, `${orderNumber}.xlsx`);
-
-            // Guardar en localStorage los reportes generados
-            let previousReports = JSON.parse(localStorage.getItem('reports')) || [];
-            previousReports.push({ orderNumber, data: worksheetData });
-            localStorage.setItem('reports', JSON.stringify(previousReports));
-
-            // Reiniciar la interfaz
-            productSerials = {};
-            scannedSerials = [];
-            localStorage.removeItem('productSerials');
-            localStorage.removeItem('scannedSerials');
-            document.getElementById('finishSection').classList.remove('visible');
-            document.getElementById('startButton').style.display = 'block';
-            document.getElementById('viewReportsButton').style.display = 'block';
-            document.getElementById('reportList').style.display = 'block';
-        });
-
-        // Botón para regresar desde la sección de finalizar
-        document.getElementById('backToSeriesFromFinish').addEventListener('click', function () {
-            document.getElementById('finishSection').classList.remove('visible');
-            document.getElementById('seriesSection').classList.add('visible');
-        });
-
-        // Función para mostrar reportes anteriores (solo desde el inicio)
-        document.getElementById('viewReportsButton').addEventListener('click', function () {
-            const reportList = document.getElementById('reportList');
-            reportList.innerHTML = '';  // Limpiar la lista
-
-            let reports = JSON.parse(localStorage.getItem('reports')) || [];
-            reports.forEach(report => {
-                let reportItem = document.createElement('li');
-                reportItem.textContent = `Reporte ${report.orderNumber}`;
-                reportItem.addEventListener('click', function () {
-                    // Descargar el reporte al hacer clic
-                    let workbook = XLSX.utils.book_new();
-                    let worksheet = XLSX.utils.aoa_to_sheet(report.data);
-                    XLSX.utils.book_append_sheet(workbook, worksheet, 'Series');
-                    XLSX.writeFile(workbook, `${report.orderNumber}.xlsx`);
-                });
-                reportList.appendChild(reportItem);
-            });
-        });
-
-        // Función para alternar entre modo claro y oscuro
-        const themeToggle = document.getElementById('themeToggle');
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme) {
-            document.body.classList.add(currentTheme);
-            themeToggle.textContent = currentTheme === 'light-mode' ? '🌞' : '🌙';
-        }
-
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            const theme = document.body.classList.contains('light-mode') ? 'light-mode' : 'dark-mode';
-            localStorage.setItem('theme', theme);
-            themeToggle.textContent = theme === 'light-mode' ? '🌞' : '🌙';
-        });
-
-        // Ocultar el botón automáticamente después de 5 segundos
-        setTimeout(() => {
-            themeToggle.style.display = 'none'; // Oculta el botón completamente
-        }, 5000);
-
-        // Deshabilitar el deslizamiento para actualizar la página en dispositivos móviles
-        document.addEventListener('touchmove', function(event) {
-            if (event.touches.length > 1 || event.scale && event.scale !== 1) {
-                event.preventDefault(); // Prevenir el comportamiento de zoom o actualización
-            }
-        }, { passive: false });
-
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
