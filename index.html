@@ -3,50 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Series</title>
+    <title>Tetris</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Registro de Series</h1>
-
-        <!-- Botones iniciales -->
-        <button id="startButton" class="section visible">Comenzar</button>
-
-        <!-- Sección para ingresar producto -->
-        <div id="productSection" class="section">
-            <h2>Ingresar código de producto</h2>
-            <input type="text" id="productCode" placeholder="Código de producto">
-            <button id="acceptProduct">Aceptar</button>
-            <div id="productError" class="alert">Por favor, ingrese un código de producto válido.</div>
-        </div>
-
-        <!-- Sección para registrar series -->
-        <div id="seriesSection" class="section">
-            <label for="registerMode">Modo de registro:</label>
-            <select id="registerMode">
-                <option value="single">Serie por serie</option>
-                <option value="batch">Por cantidades</option>
-            </select>
-            <div id="counter">Registrando: Producto | Series: 0</div>
-            <input type="text" id="seriesCode" placeholder="Código de serie">
-            <input type="number" id="seriesQuantity" placeholder="Cantidad (Opcional)" style="display: none;">
-            <button id="registerSeries">Registrar Serie</button>
-            <button id="newProduct">Registrar Nuevo Producto</button>
-            <button id="finish">Finalizar</button>
-            <div id="seriesError" class="alert">Por favor, ingrese un código de serie válido.</div>
-        </div>
-
-        <!-- Sección para finalizar -->
-        <div id="finishSection" class="section">
-            <h2>Finalizar Pedido</h2>
-            <input type="text" id="orderNumber" placeholder="Número de pedido">
-            <button id="generateReport">Generar Reporte</button>
-            <div id="reportError" class="alert">Por favor, ingrese un número de pedido válido.</div>
+    <div class="app">
+        <header>
+            <h1>Tetris</h1>
+            <p class="subtitle">Haz líneas, sube de nivel y rompe tu récord.</p>
+        </header>
+        <main class="game-area">
+            <canvas id="board" width="300" height="600" aria-label="Tablero de Tetris"></canvas>
+            <aside class="panel">
+                <div class="panel-card">
+                    <h2>Marcador</h2>
+                    <div class="stats">
+                        <div>
+                            <span class="label">Puntos</span>
+                            <span id="score">0</span>
+                        </div>
+                        <div>
+                            <span class="label">Nivel</span>
+                            <span id="level">1</span>
+                        </div>
+                        <div>
+                            <span class="label">Líneas</span>
+                            <span id="lines">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-card">
+                    <h2>Siguiente</h2>
+                    <canvas id="next" width="120" height="120" aria-label="Siguiente pieza"></canvas>
+                </div>
+                <div class="panel-card">
+                    <h2>Controles</h2>
+                    <ul>
+                        <li>⬅️ ➡️ mover</li>
+                        <li>⬆️ rotar</li>
+                        <li>⬇️ caer rápido</li>
+                        <li>Espacio: caída instantánea</li>
+                        <li>P: pausar</li>
+                    </ul>
+                </div>
+                <div class="panel-card actions">
+                    <button id="start">Iniciar partida</button>
+                    <button id="pause" disabled>Pausar</button>
+                </div>
+            </aside>
+        </main>
+        <div id="overlay" class="overlay hidden">
+            <div class="message">
+                <h2 id="overlayTitle">¡Game Over!</h2>
+                <p id="overlayText">Presiona iniciar para volver a jugar.</p>
+            </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
