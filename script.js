@@ -88,7 +88,7 @@ function createMatrix(width, height) {
 function createPiece(type) {
     return {
         type,
-        matrix: shapes[type].map((row) => [...row]),
+        matrix: shapes[type].map((row) => row.map((cell) => (cell ? type : null))),
         position: { x: Math.floor(gridWidth / 2) - 1, y: 0 },
     };
 }
@@ -109,7 +109,7 @@ function drawMatrix(matrix, offset, ctx = context) {
 
 function drawBoard() {
     context.fillStyle = "#020617";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.fillRect(0, 0, gridWidth, gridHeight);
     drawMatrix(state.board, { x: 0, y: 0 });
     if (state.current) {
         drawMatrix(state.current.matrix, state.current.position);
@@ -118,7 +118,7 @@ function drawBoard() {
 
 function drawNext() {
     nextContext.fillStyle = "#020617";
-    nextContext.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
+    nextContext.fillRect(0, 0, 5, 5);
     if (!state.next) return;
     const preview = state.next.matrix;
     const offsetX = Math.floor((4 - preview[0].length) / 2);
@@ -183,7 +183,7 @@ function playerDrop() {
         merge(state.board, state.current);
         resetPiece();
         sweepLines();
-        updateScore(0);
+        updateScore();
     }
     state.dropCounter = 0;
 }
@@ -197,7 +197,7 @@ function hardDrop() {
     merge(state.board, state.current);
     resetPiece();
     sweepLines();
-    updateScore(0);
+    updateScore();
     state.dropCounter = 0;
 }
 
